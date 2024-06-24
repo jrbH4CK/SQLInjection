@@ -1,5 +1,5 @@
 # SQL Injection
-En este repositorio incluire mis notas de sql injection y algunos payloads utilizados por mi.
+La inyección SQL es una vulnerabilidad de seguridad en aplicaciones web que permite a un atacante insertar código SQL malicioso en las consultas a una base de datos. Esto puede comprometer la integridad de los datos, revelar información confidencial o permitir acciones no autorizadas en el sistema afectado.
 
 ## Payloads de autenticación
 ```sql
