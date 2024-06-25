@@ -172,7 +172,7 @@ for i in range(0, 20):
         if "Welcome back" in response.text:
             password += j
             print(f"Found character at position {i+1}: {password}")
-            break  # Salir del bucle interno una vez encontrado el carácter
+            break
 
 print(f"Password found: {password}")
 ```
